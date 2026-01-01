@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Metas 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 16px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: transparent;
+            padding: 0 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 12px;
+        }
+        h1 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+        .date-badge { background: var(--surface); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); box-shadow: var(--shadow); }
+
+        .tabs {
+            display: flex;
+            background: var(--surface);
+            padding: 6px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-btn {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 8px;
+            transition: all 0.2s;
+            margin-right: 6px;
+        }
+
+        .tab-btn.active { background: var(--primary-light); color: var(--primary); }
+        .tab-btn.gold-tab.active { background: #fef3c7; color: #d97706; }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        input:focus, textarea:focus { outline: 2px solid var(--primary-light); border-color: var(--primary); }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-danger { background: #ef4444; }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+            display:block;
+        }
+
+        .gallery-content { padding: 15px; }
+        .gallery-date { font-size: 0.75rem; color: #999; margin-bottom: 5px; display: block; }
+        .gallery-text { font-size: 0.95rem; line-height: 1.4; color: #333; }
+
+        .file-upload-wrapper {
+            border: 2px dashed var(--border);
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            background: #f8fafc;
+            cursor: pointer;
+        }
+        .file-upload-wrapper:hover { border-color: var(--primary); background: #f0f9ff; }
+
+        ul { list-style: none; padding: 0; margin:0; }
+        li { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        li.done span { text-decoration: line-through; color: #cbd5e1; }
+        .delete-icon { margin-left: auto; cursor: pointer; color: #cbd5e1; }
+        .delete-icon:hover { color: #ef4444; }
+        
+        .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .progress-fill { height: 100%; background: var(--secondary); width: 0%; transition: width 0.5s ease; }
+
+        .timer-box { text-align: center; padding: 40px; }
+        .timer-digits { font-size: 5rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-row { display: flex; gap: 10px; }
+        .input-row .flex-auto { flex: 1; }
+        .input-row .btn { flex: 0 0 auto; }
+
+        .gallery-img { aspect-ratio: 16 / 9; height: auto; max-height: 240px; }
+
+        @media (max-width: 900px) {
+            .app-container { padding: 0 12px; }
+            header { gap: 8px; }
+            .tab-btn { padding: 8px 12px; font-size: 0.95rem; }
+            .two-col { grid-template-columns: 1fr; }
+            .card { padding: 18px; }
+            .timer-box { padding: 24px; }
+            .timer-digits { font-size: clamp(2.2rem, 10vw, 4.2rem); }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+            .gallery-img { max-height: 200px; }
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            header { flex-direction: column; align-items: flex-start; }
+            header > div:last-child { width: 100%; display:flex; justify-content: flex-end; }
+            .date-badge { margin-top: 6px; }
+            .tabs { padding: 8px; }
+            .tab-btn { padding: 10px 12px; font-size: 0.9rem; }
+
+            .input-row { flex-direction: column; }
+            .input-row .btn { width: 100%; }
+
+            .file-upload-wrapper { padding: 16px; }
+            .btn[style] { width: 100% !important; }
+
+            .card { padding: 14px; border-radius: 12px; }
+            .gallery-img { max-height: 160px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header>
+        <div>
+            <h1>🚀 Mis Metas 2026</h1>
+        </div>
+        <div class="date-badge" id="currentDate"></div>
+    </header>
+
+    <nav class="tabs">
+        <button class="tab-btn active" onclick="openTab('vision')">1. Visión</button>
+        <button class="tab-btn" onclick="openTab('monthly')">2. Mensual</button>
+        <button class="tab-btn" onclick="openTab('daily')">3. Diario</button>
+        <button class="tab-btn" onclick="openTab('focus')">4. Focus</button>
+        <button class="tab-btn gold-tab" onclick="openTab('gallery')">🏆 Mis Victorias</button>
+    </nav>
+
+    <div id="vision" class="tab-content active">
+        <div class="two-col">
+            <div class="card" style="border-left: 5px solid #10b981;">
+                <h2>✨ Mi Vida soñada (Visión)</h2>
+                <textarea id="visionTxt" style="height: 250px;" placeholder="Escribe aquí tu gran sueño  y lo que quieres lograr para este 2026..."></textarea>
+            </div>
+            <div class="card" style="border-left: 5px solid #ef4444;">
+                <h2>🔥 Lo que evito (Anti-Visión)</h2>
+                <textarea id="antiVisionTxt" style="height: 250px;" placeholder="Escribe aquí lo que no quieres que pase y lo que más miedo te da a que ocurra para asi evitar llegar a eso..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="monthly" class="tab-content">
+        <div class="card">
+            <div class="input-row" style="justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <select id="monthSelector" onchange="renderMonthly()" style="width: auto; margin:0; font-weight: bold;">
+                    <option value="2026-01">Enero 2026</option>
+                    <option value="2026-02">Febrero 2026</option>
+                    <option value="2026-03">Marzo 2026</option>
+                    <option value="2026-04">Abril 2026</option>
+                    <option value="2026-05">Mayo 2026</option>
+                    <option value="2026-06">Junio 2026</option>
+                    <option value="2026-07">Julio 2026</option>
+                    <option value="2026-08">Agosto 2026</option>
+                    <option value="2026-09">Septiembre 2026</option>
+                    <option value="2026-10">Octubre 2026</option>
+                    <option value="2026-11">Noviembre 2026</option>
+                    <option value="2026-12">Diciembre 2026</option>
+                </select>
+                <div style="width: 150px; text-align: right;">
+                    <small>Progreso</small>
+                    <div class="progress-bar"><div id="monthProgress" class="progress-fill"></div></div>
+                </div>
+            </div>
+            
+            <div class="input-row" style="display:flex; gap:10px;">
+                <input class="flex-auto" type="text" id="monthInput" placeholder="Meta del mes, aqui escribe todas tus metas mensuales (ej. Aprobar con un promedio mayor a 14)...">
+                <button class="btn" onclick="addItem('monthlyGoals', 'monthInput')">+</button>
+            </div>
+            <ul id="monthList"></ul>
+        </div>
+    </div>
+
+    <div id="daily" class="tab-content">
+        <div class="card">
+            <h2>🔁 Hábitos Diarios</h2>
+            <div class="input-row" style="display:flex; gap:10px;">
+                <input class="flex-auto" type="text" id="habitInput" placeholder="Hábitos (ej. Ir al gym 1 hora)...">
+                <button class="btn" onclick="addHabit()">Añadir</button>
+            </div>
+            <ul id="habitList"></ul>
+        </div>
+    </div>
+
+    <div id="focus" class="tab-content">
+        <div class="card timer-box">
+            <h2>🍅 Trabajo Profundo</h2>
+            <p>Bloquea distracciones. 50 minutos de enfoque total.</p>
+            <p>Usa este espacio para estudiar, apuntar y todo lo que necesita concentración total. No escuches musica de preferencia</p>
+            <div class="timer-digits" id="timerDisplay">50:00</div>
+            <div style="margin-top: 20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                <button class="btn" onclick="startTimer()">Iniciar</button>
+                <button class="btn btn-danger" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="gallery" class="tab-content">
+        <div class="card" style="background: #fffbeb; border-color: #fcd34d;">
+            <h2>🏆 Mis Victorias</h2>
+            <p>Sube fotos de tus logros. Cuando tengas un "bajón", ven aquí y recuerda de lo que eres capaz.</p>
+            
+            <div class="file-upload-wrapper">
+                <input type="file" id="imgInput" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
+                <label for="imgInput" style="cursor: pointer; display: block;">
+                    <strong>📸 Clic para subir foto</strong><br>
+                    <small>(Se comprimirá automáticamente)</small>
+                </label>
+            </div>
+            <textarea id="imgCaption" placeholder="¿Qué lograste? ¿Cómo te sientes? (ej. Pude aprobar todo sin ninguna preocupación!! Estoy muy feliz conmigo mismo.)" style="margin-top: 10px;"></textarea>
+            <button class="btn" style="width:100%; background: #d97706;" onclick="saveAchievement()">Guardar Recuerdo</button>
+        </div>
+
+        <div id="galleryGrid" class="gallery-grid">
+            </div>
+    </div>
+
+</div>
+
+<canvas id="compressorCanvas" style="display:none;"></canvas>
+
+<script>
+    if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+    }
+
+    const DB_KEY = 'sistema2026_pro_v3';
+    let data = {
+        vision: '',
+        antiVision: '',
+        monthlyGoals: {},
+        habits: [],
+        achievements: [] 
+    };
+    
+    let timerInterval;
+    let focusTime = 50 * 60;
+    let currentImageBase64 = null;
+
+    document.onload = loadData();
+    document.addEventListener('DOMContentLoaded', () => {
+        setupDate();
+        loadData();
+        openTab('vision');
+    });
+
+    function setupDate() {
+        const now = new Date();
+        document.getElementById('currentDate').innerText = now.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        const currentKey = now.toISOString().slice(0, 7);
+        const sel = document.getElementById('monthSelector');
+        if(sel.querySelector(`option[value="${currentKey}"]`)) sel.value = currentKey;
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem(DB_KEY, JSON.stringify(data));
+            renderAll();
+        } catch (e) {
+            alert("⚠️ Memoria llena. Intenta borrar algunas fotos antiguas.");
+        }
+    }
+
+    function loadData() {
+        const stored = localStorage.getItem(DB_KEY);
+        if (stored) data = JSON.parse(stored);
+        
+        document.getElementById('visionTxt').value = data.vision || '';
+        document.getElementById('antiVisionTxt').value = data.antiVision || '';
+        renderAll();
+    }
+
+    function renderAll() {
+        renderMonthly();
+        renderHabits();
+        renderGallery();
+    }
+
+    function openTab(id) {
+        document.querySelectorAll('.tab-content').forEach(d => d.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        const btns = document.querySelectorAll('.tab-btn');
+        if(id==='vision') btns[0].classList.add('active');
+        if(id==='monthly') btns[1].classList.add('active');
+        if(id==='daily') btns[2].classList.add('active');
+        if(id==='focus') btns[3].classList.add('active');
+        if(id==='gallery') btns[4].classList.add('active');
+    }
+
+    document.getElementById('visionTxt').addEventListener('input', (e) => { data.vision = e.target.value; saveData(); });
+    document.getElementById('antiVisionTxt').addEventListener('input', (e) => { data.antiVision = e.target.value; saveData(); });
+
+    function addItem(type, inputId) {
+        const input = document.getElementById(inputId);
+        const val = input.value.trim();
+        if(!val) return;
+
+        if(type === 'monthlyGoals') {
+            const month = document.getElementById('monthSelector').value;
+            if(!data.monthlyGoals[month]) data.monthlyGoals[month] = [];
+            data.monthlyGoals[month].push({ id: Date.now(), text: val, done: false });
+        }
+        input.value = '';
+        saveData();
+    }
+
+    function toggleItem(type, id, monthKey = null) {
+        if(type === 'monthly') {
+            const item = data.monthlyGoals[monthKey].find(i => i.id === id);
+            item.done = !item.done;
+        } else if (type === 'habit') {
+            const item = data.habits.find(i => i.id === id);
+            const today = new Date().toISOString().slice(0, 10);
+            item.lastDone = (item.lastDone === today) ? null : today;
+        }
+        saveData();
+    }
+
+    function deleteItem(type, id, monthKey = null) {
+        if(confirm('¿Borrar?')) {
+            if(type === 'monthly') {
+                data.monthlyGoals[monthKey] = data.monthlyGoals[monthKey].filter(i => i.id !== id);
+            } else if (type === 'habit') {
+                data.habits = data.habits.filter(i => i.id !== id);
+            } else if (type === 'gallery') {
+                data.achievements = data.achievements.filter(i => i.id !== id);
+            }
+            saveData();
+        }
+    }
+
+    function renderMonthly() {
+        const month = document.getElementById('monthSelector').value;
+        const list = document.getElementById('monthList');
+        const items = data.monthlyGoals[month] || [];
+        
+        list.innerHTML = '';
+        let doneCount = 0;
+
+        items.forEach(item => {
+            if(item.done) doneCount++;
+            list.innerHTML += `
+                <li class="${item.done ? 'done' : ''}">
+                    <input type="checkbox" ${item.done ? 'checked' : ''} onclick="toggleItem('monthly', ${item.id}, '${month}')" style="width:20px; height:20px; margin-right:10px;">
+                    <span>${item.text}</span>
+                    <span class="delete-icon" onclick="deleteItem('monthly', ${item.id}, '${month}')">✕</span>
+                </li>
+            `;
+        });
+
+        const pct = items.length ? (doneCount / items.length) * 100 : 0;
+        document.getElementById('monthProgress').style.width = pct + '%';
+    }
+
+    function addHabit() {
+        const val = document.getElementById('habitInput').value.trim();
+        if(!val) return;
+        data.habits.push({ id: Date.now(), text: val, lastDone: null });
+        document.getElementById('habitInput').value = '';
+        saveData();
+    }
+
+    function renderHabits() {
+        const list = document.getElementById('habitList');
+        const today = new Date().toISOString().slice(0, 10);
+        list.innerHTML = '';
+        
+        data.habits.forEach(h => {
+            const isDone = h.lastDone === today;
+            list.innerHTML += `
+                <li class="${isDone ? 'done' : ''}">
+                    <input type="checkbox" ${isDone ? 'checked' : ''} onclick="toggleItem('habit', ${h.id})" style="width:20px; height:20px; margin-right:10px;">
+                    <span>${h.text}</span>
+                    <span class="delete-icon" onclick="deleteItem('habit', ${h.id})">✕</span>
+                </li>
+            `;
+        });
+    }
+
+    function updateTimer() {
+        const m = Math.floor(focusTime / 60).toString().padStart(2, '0');
+        const s = (focusTime % 60).toString().padStart(2, '0');
+        document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    }
+
+    function startTimer() {
+        if(timerInterval) return;
+        timerInterval = setInterval(() => {
+            if(focusTime > 0) {
+                focusTime--;
+                updateTimer();
+            } else {
+                clearInterval(timerInterval);
+                alert("🎉 ¡Sesión de 50 minutos completada!");
+                resetTimer();
+            }
+        }, 1000);
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        focusTime = 50 * 60;
+        updateTimer();
+    }
+
+    function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('compressorCanvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    const maxWidth = 400;
+                    const scaleSize = maxWidth / img.width;
+                    canvas.width = maxWidth;
+                    canvas.height = img.height * scaleSize;
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    currentImageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    alert("Foto lista para guardar. Añade una descripción y pulsa Guardar.");
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveAchievement() {
+        const caption = document.getElementById('imgCaption').value;
+        if(!currentImageBase64 && !caption) {
+            alert("Sube una foto o escribe algo primero.");
+            return;
+        }
+
+        data.achievements.unshift({
+            id: Date.now(),
+            img: currentImageBase64, 
+            text: caption,
+            date: new Date().toLocaleDateString()
+        });
+
+        document.getElementById('imgCaption').value = '';
+        document.getElementById('imgInput').value = '';
+        currentImageBase64 = null;
+        
+        saveData();
+    }
+
+    function renderGallery() {
+        const grid = document.getElementById('galleryGrid');
+        grid.innerHTML = '';
+        
+        if(!data.achievements || data.achievements.length === 0) {
+            grid.innerHTML = '<p style="color:#999; grid-column:1/-1; text-align:center;">Aún no hay victorias registradas. ¡Logra algo hoy!</p>';
+            return;
+        }
+
+        data.achievements.forEach(item => {
+            let imgHTML = item.img ? `<img src="${item.img}" class="gallery-img">` : '';
+            grid.innerHTML += `
+                <div class="gallery-item">
+                    ${imgHTML}
+                    <div class="gallery-content">
+                        <span class="gallery-date">${item.date}</span>
+                        <div class="gallery-text">${item.text}</div>
+                        <button onclick="deleteItem('gallery', ${item.id})" style="margin-top:10px; background:none; border:none; color:#ef4444; cursor:pointer; font-size:0.8rem;">Eliminar</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+</script>
+</body>
+</html>
